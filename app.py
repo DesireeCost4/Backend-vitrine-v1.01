@@ -23,10 +23,10 @@ if not url:
     raise Exception("A variável DATABASE_URL não está definida no .env")
 
 # Conecta ao banco para verificar se está tudo ok
-conn = psycopg.connect(url)
-with conn.cursor() as cur:
-    cur.execute("SELECT NOW()")
-    print(cur.fetchone())  # Só imprime a data/hora atual como teste de conexão
+conn = psycopg.connect(
+    url,
+    sslrootcert="certs/root.crt",
+    sslmode="verify-full") # Só imprime a data/hora atual como teste de conexão
 
 # ROTA DE IA: gera descrição automática com Gemini AI
 @app.route("/descricao", methods=["POST"])
