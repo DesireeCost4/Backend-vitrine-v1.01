@@ -21,3 +21,4 @@ def get_connection():
     
     # Retorna a conexão com o banco de dados usando a URL fornecida
     return psycopg.connect(url)
+print("Conexão realizada com sucesso!")
