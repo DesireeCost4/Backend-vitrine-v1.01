@@ -14,7 +14,8 @@ app = Flask(__name__)
 CORS(app)
 
 # Carrega variáveis do .env
-API_KEY = 'AIzaSyAwmVhCL1ejUF8pmA1uqNXjl_iOq1zunfs'  # Minha chave da API do Gemini (Google AI)
+API_KEY = os.getenv("API_KEY")
+  # Minha chave da API do Gemini (Google AI)
 load_dotenv()
 url = os.getenv("DATABASE_URL")  # Lê a URL do banco
 
@@ -258,4 +259,5 @@ def login():
 
 # Inicia o servidor com debug ativado
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
