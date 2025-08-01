@@ -22,6 +22,17 @@ url = os.getenv("DATABASE_URL")  # Lê a URL do banco
 if not url:
     raise Exception("A variável DATABASE_URL não está definida no .env")
 
+
+# Se estiver em produção, recria o arquivo root.crt a partir da variável de ambiente
+if os.getenv("RENDER") == "true":  # variável automática da Render
+    cert_path = os.path.expanduser("~/.postgresql")
+    os.makedirs(cert_path, exist_ok=True)
+    with open(os.path.join(cert_path, "root.crt"), "wb") as f:
+        f.write(base64.b64decode(os.environ["ROOT_CERT_BASE64"]))
+    ssl_cert_path = os.path.join(cert_path, "root.crt")
+else:
+    ssl_cert_path = "certs/root.crt"  # Caminho local para desenvolvimento
+
 # Conecta ao banco para verificar se está tudo ok
 conn = psycopg.connect(
     url,

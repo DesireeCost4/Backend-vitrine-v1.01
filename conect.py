@@ -14,11 +14,10 @@ def write_cert():
         f.write(base64.b64decode(cert_base64))
     return cert_path
 
-def get_connection():
+def get_db_connection():
     url = os.getenv("DATABASE_URL")
-    if not url:
-        raise Exception("A variável DATABASE_URL não foi encontrada.")
     cert_path = write_cert()
-    return psycopg.connect(url, sslrootcert=cert_path, sslmode="verify-full")
+    return psycopg.connect(url, sslrootcert=cert_path)
+
 
 print("Conexão realizada com sucesso!")
