@@ -13,6 +13,9 @@ from gerador_descricao import gerar_descricao_gemini, ajustar_texto
 app = Flask(__name__)
 CORS(app)
 
+cert_path = "certs/root.crt"
+print("Existe cert?", os.path.isfile(cert_path))
+
 # Carrega variáveis do .env
 API_KEY = os.getenv("API_KEY")
   # Minha chave da API do Gemini (Google AI)
