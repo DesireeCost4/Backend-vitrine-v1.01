@@ -20,5 +20,7 @@ def get_connection():
         raise Exception("A variável DATABASE_URL não foi encontrada.")
     
     # Retorna a conexão com o banco de dados usando a URL fornecida
-    return psycopg.connect(url)
+    return psycopg.connect(
+        url,
+         sslrootcert="certs/root.crt")
 print("Conexão realizada com sucesso!")
