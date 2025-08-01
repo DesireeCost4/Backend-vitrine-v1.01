@@ -19,6 +19,6 @@ def get_connection():
     if not url:
         raise Exception("A variável DATABASE_URL não foi encontrada.")
     cert_path = write_cert()
-    return psycopg.connect(url, sslrootcert=cert_path)
+    return psycopg.connect(url, sslrootcert=cert_path, sslmode="verify-full")
 
 print("Conexão realizada com sucesso!")
