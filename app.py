@@ -200,7 +200,11 @@ def listar_produtos():
     # Converte os dados para JSON, incluindo a imagem como base64
     produtos = []
     for row in rows:
-        imagem_bytes = row[6]
+        try:
+            imagem_bytes = row[6]
+        except Exception as e:
+            print(f"Erro ao converter imagem para base64: {e}")
+        imagem_b64 = None
         produtos.append({
             "id": str(row[0]),
             "nome": row[1],
@@ -216,6 +220,7 @@ def listar_produtos():
 # ROTA PARA DETALHE DE UM PRODUTO
 @app.route('/produtos/<id>', methods=['GET'])
 def obter_produto(id):
+    print(f"imagem_bytes type: {type(imagem_bytes)}")  # Debug
     print(f"ID recebido na rota: {id} (tipo: {type(id)})")
 
     conn = get_db_connection()
