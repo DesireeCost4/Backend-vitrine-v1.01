@@ -64,6 +64,7 @@ def descricao():
 def get_db_connection():
     return psycopg.connect(os.environ['DATABASE_URL'])
 
+
 # Rota simples para teste
 @app.route('/')
 def home():
@@ -128,6 +129,8 @@ def cadastrar_produto():
         }
     }), 201
 
+
+
 # ROTA DE ATUALIZAÇÃO (UPDATE)
 @app.route('/produtos/<int:id>', methods=['PATCH'])
 def editar_produto(id):
@@ -166,7 +169,7 @@ def editar_produto(id):
             campos.append("descricao = %s")
             valores.append(descricao)
         if imagem:
-            imagem_bytes = imagem.read()
+            imagem_bytes = imagem.read() if imagem else None
             campos.append("imagem = %s")
             valores.append(imagem_bytes)
 
@@ -176,6 +179,7 @@ def editar_produto(id):
         conn.commit()
 
     return jsonify({"mensagem": "Produto atualizado com sucesso."}), 200
+
 
 # ROTA DE DELETE
 @app.route('/produtos/<int:id>', methods=['DELETE'])
@@ -240,7 +244,6 @@ def listar_produtos():
 # ROTA PARA DETALHE DE UM PRODUTO
 @app.route('/produtos/<id>', methods=['GET'])
 def obter_produto(id):
-    print(f"imagem_bytes type: {type(imagem_bytes)}")  # Debug
     print(f"ID recebido na rota: {id} (tipo: {type(id)})")
 
     conn = get_db_connection()
@@ -252,6 +255,10 @@ def obter_produto(id):
         row = cur.fetchone()
 
     if row:
+        # aqui você tem a imagem em row[6]
+        imagem_bytes = row[6]
+        print(f"imagem_bytes type: {type(imagem_bytes)}")  # Debug movido para cá
+
         produto = {
             "id": row[0],
             "nome": row[1],
@@ -259,7 +266,7 @@ def obter_produto(id):
             "categoria": row[3],
             "estoque": int(row[4]),
             "descricao": row[5],
-            "imagem": base64.b64encode(row[6]).decode('utf-8') if row[6] else None
+            "imagem": base64.b64encode(imagem_bytes).decode('utf-8') if imagem_bytes else None
         }
         return jsonify(produto)
     else:
