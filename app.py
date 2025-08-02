@@ -72,6 +72,14 @@ def home():
 # ROTA DE CADASTRO (CREATE)
 @app.route('/admin/produtos', methods=['POST'])
 def cadastrar_produto():
+    
+    
+    print("request.form:", request.form)          
+    print("request.files:", request.files)        
+    print("imagem:", request.files.get('imagem'))  
+
+    
+    
     # Lê dados do formulário enviado via multipart/form-data
     nome = request.form.get('nome')
     preco = request.form.get('preco')
@@ -193,7 +201,6 @@ def listar_produtos():
 
     conn = get_db_connection()
     with conn.cursor() as cur:
-        # Filtra se houver busca
         if busca:
             cur.execute("""
                 SELECT id, nome, preco, categoria, estoque, descricao, imagem
@@ -205,17 +212,19 @@ def listar_produtos():
                 SELECT id, nome, preco, categoria, estoque, descricao, imagem
                 FROM produtos
             """)
-        
         rows = cur.fetchall()
 
-    # Converte os dados para JSON, incluindo a imagem como base64
     produtos = []
     for row in rows:
+        imagem_bytes = None
+        imagem_b64 = None
         try:
             imagem_bytes = row[6]
+            if imagem_bytes:
+                imagem_b64 = base64.b64encode(imagem_bytes).decode('utf-8')
         except Exception as e:
             print(f"Erro ao converter imagem para base64: {e}")
-        imagem_b64 = None
+
         produtos.append({
             "id": str(row[0]),
             "nome": row[1],
@@ -223,7 +232,7 @@ def listar_produtos():
             "categoria": row[3],
             "estoque": int(row[4]),
             "descricao": row[5],
-            "imagem": base64.b64encode(imagem_bytes).decode('utf-8') if imagem_bytes else None
+            "imagem": imagem_b64
         })
 
     return jsonify(produtos)
