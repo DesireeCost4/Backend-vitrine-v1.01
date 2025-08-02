@@ -94,7 +94,7 @@ def cadastrar_produto():
         "preco": preco,
         "categoria": categoria,
         "estoque": estoque,
-        "imagem": imagem,
+        ##"imagem": imagem,
         "descricao": descricao
     }
 
